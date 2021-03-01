@@ -2,17 +2,22 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using UsersCRUD.Data;
+using UsersCRUD.Models;
 
 namespace UsersCRUD.Areas.Identity.Pages.Account
 {
@@ -46,12 +51,27 @@ namespace UsersCRUD.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+            
+            
+            [Display(Name = "Address")]
+            public string Address { get; set; }
+
+
+            [Display(Name = "Phone")]
+            public string PhoneNumber { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.")]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -74,10 +94,18 @@ namespace UsersCRUD.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                //var username = Input.FirstName + " " + Input.LastName;
+                var user = new IdentityUser {UserName  = Input.Email,Email = Input.Email ,PhoneNumber = Input.PhoneNumber };
+               
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.CreateAsync(user, Input.FirstName);
+                await _userManager.CreateAsync(user, Input.LastName);
+                await _userManager.CreateAsync(user, Input.Address);
+
+
                 if (result.Succeeded)
                 {
+                   
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -91,6 +119,12 @@ namespace UsersCRUD.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+                    //Add Roles
+                    await _userManager.AddToRoleAsync(user, "Student");
+                    ////////
+                    //await _userManager.SetUserNameAsync(user, Input.LastName+" "+Input.FirstName);
+
+                    
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
