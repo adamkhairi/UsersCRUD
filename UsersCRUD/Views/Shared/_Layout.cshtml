@@ -1,13 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - UsersCRUD</title>
 
+    <!-- ======================================================= -->
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     @*<link rel="stylesheet" href="~/css/site.css" />*@
@@ -17,7 +20,9 @@
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
 
     <!-- Vendor CSS Files -->
@@ -30,12 +35,13 @@
     <!-- Template Main CSS File -->
     <link href="/css/style.css" rel="stylesheet">
 
-    <!-- =======================================================
 
 
-    ======================================================== -->
+
+    <!-- ======================================================== -->
 
 </head>
+
 <body>
     <!-- ======= Header ======= -->
 
@@ -53,7 +59,7 @@
                     <li><a href="#about">About</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#portfolio">Portfolio</a></li>
-                    <li><a  asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                    <li><a asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                     <li class="drop-down">
                         <a href="">Drop Down</a>
                         <ul>
@@ -85,32 +91,42 @@
         </div>
 
         @*<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UsersCRUD</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
+            <div class="container">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UsersCRUD</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </li>
 
-                        </ul>
-                        <partial name="_LoginPartial" />
-                    </div>
-                </div>
+            </ul>
+            <partial name="_LoginPartial" />
+            </div>
+            </div>
             </nav>*@
     </header>
     <!-- ======= End Header ======= -->
+
+
+
+
+
+
+
     <!-- ======= Main ======= -->
 
 
     <main id="main" role="main">
+
+
 
         <!-- ======= Hero Section ======= -->
 
@@ -128,17 +144,17 @@
 
                                 @if (SignInManager.IsSignedIn(User))
                                 {
+                                   @if (User.IsInRole("Admin"))
+                                   {
                                     <h1 class="display-4">Welcome</h1>
                                     <a asp-action="Index" asp-controller="UserRoles" class="btn btn-outline-secondary">Configure User Roles</a>
-
+                                   }
                                 }
                                 else
                                 {
                                     <h1 class="display-4">Welcome</h1>
                                     <h2 class="text-center">Please login to view more...</h2>
                                 }
-
-
                             </div>
                         </div>
                     </div>
@@ -179,8 +195,10 @@
                 </div>
             </section>
         }
-
         <!-- End Hero -->
+
+
+
         @* Users Section *@
 
         <section id="listStudent" class="listStudent" data-aos="zoom-in">
@@ -191,9 +209,6 @@
         </section>
 
         @* End Users Section *@
-
-
-
 
 
         <!-- ======= Clients Section ======= -->
@@ -222,10 +237,10 @@
 
     </main>
     @*<div class="container">
-            <main role="main" class="pb-3">
-                    @RenderBody()
+        <main role="main" class="pb-3">
+        @RenderBody()
 
-            </main>
+        </main>
         </div>*@
 
 
@@ -257,11 +272,14 @@
                     <div class="col-lg-2 col-md-6 footer-links">
                         <h4>Useful Links</h4>
                         <ul>
-                            <li><i class="bx bx-chevron-right"></i> <a asp-action="Index" asp-controller="Home">Home</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a asp-action="Index" asp-controller="Home">About us</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a asp-action="Index" asp-controller="Home">Home</a>
+                            </li>
+                            <li><i class="bx bx-chevron-right"></i> <a asp-action="Index" asp-controller="Home">About
+                                    us</a></li>
                             <li><i class="bx bx-chevron-right"></i> <a href="#services">Services</a></li>
                             <li><i class="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a  asp-controller="Home" asp-action="Privacy">Privacy policy</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a asp-controller="Home"
+                                    asp-action="Privacy">Privacy policy</a></li>
                         </ul>
                     </div>
 
@@ -325,4 +343,5 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

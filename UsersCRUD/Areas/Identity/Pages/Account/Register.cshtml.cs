@@ -61,14 +61,18 @@ namespace UsersCRUD.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
-            
-            
+
+
             [Display(Name = "Address")]
             public string Address { get; set; }
 
 
             [Display(Name = "Phone")]
             public string PhoneNumber { get; set; }
+
+
+            [Display(Name = "Cin")]
+            public string Cin { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.")]
@@ -94,18 +98,14 @@ namespace UsersCRUD.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                //var username = Input.FirstName + " " + Input.LastName;
-                var user = new IdentityUser {UserName  = Input.Email,Email = Input.Email ,PhoneNumber = Input.PhoneNumber };
-               
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                await _userManager.CreateAsync(user, Input.FirstName);
-                await _userManager.CreateAsync(user, Input.LastName);
-                await _userManager.CreateAsync(user, Input.Address);
+                var username = Input.FirstName + "_" + Input.LastName;
+                var user = new ApplicationUser { UserName = username, Email = Input.Email, PhoneNumber = Input.PhoneNumber, LastName = Input.LastName, FirstName = username, Cin = Input.Cin, Address = Input.Address };
 
+                var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                   
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -124,7 +124,7 @@ namespace UsersCRUD.Areas.Identity.Pages.Account
                     ////////
                     //await _userManager.SetUserNameAsync(user, Input.LastName+" "+Input.FirstName);
 
-                    
+
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });

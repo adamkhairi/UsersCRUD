@@ -42,20 +42,20 @@ namespace UsersCRUD
             //Add Identity User Role
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
+                .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
 
             services.Configure<IdentityOptions>(options =>
             {
-                //// Default SignIn settings.
-                //options.User.RequireUniqueEmail = true;
-                //// Default Password settings.
-                //options.Password.RequireDigit = false;
-                //options.Password.RequireLowercase = false;
-                //options.Password.RequireNonAlphanumeric = false;
-                //options.Password.RequireUppercase = false;
-                //options.Password.RequiredLength = 6;
-                //options.Password.RequiredUniqueChars = 1;
+                // Default SignIn settings.
+                options.User.RequireUniqueEmail = true;
+                // Default Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
             });
 
             services.AddAuthentication()
@@ -71,6 +71,7 @@ namespace UsersCRUD
                 });
 
             services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -111,9 +111,7 @@ namespace UsersCRUD.Controllers
             //return to details with parameter userId
 
             var user = await _userManager.FindByNameAsync(userName);
-
             var result = await _userManager.RemoveFromRoleAsync(user, role);
-
             return RedirectToAction(nameof(Details), new { userId = user.Id });
         }
 
